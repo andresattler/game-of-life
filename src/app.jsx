@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaRandom, FaPlay, FaPause, FaStepForward, FaTrash } from 'react-icons/lib/fa'
 
 import createField from './create-field'
 import next from './next'
@@ -59,7 +60,6 @@ class App extends React.Component {
       })
     }
   }
-
   render () {
     return (
       <div>
@@ -80,9 +80,18 @@ class App extends React.Component {
                />)}
         </div>
         <div className='menu'>
-          <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? '▋▋' : '▶'}</button>
-          <button disabled={this.state.play} onClick={() => { this.setState({ field: next(this.state.field) }) }}>Next</button>
-          <button onClick={() => { this.setState({ field: createField(100, 60), play: false }) }}>Clear</button>
+          <button onClick={() => {
+            this.setState({
+              field: this.state.field.map(cell => {
+                const newCell = Object.assign({}, cell)
+                newCell.alive = Math.random() > 0.75
+                return newCell
+              })
+            })
+          }}><FaRandom /></button>
+        <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? <FaPause /> : <FaPlay />}</button>
+          <button disabled={this.state.play} onClick={() => { this.setState({ field: next(this.state.field) }) }}><FaStepForward /></button>
+          <button onClick={() => { this.setState({ field: createField(100, 60), play: false }) }}><FaTrash /></button>
         </div>
       </div>
     )
