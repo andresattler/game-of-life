@@ -14,11 +14,17 @@ class App extends React.Component {
     }
   }
   componentDidMount () {
+    let resizeTimeout
     window.addEventListener('resize', (e) => {
-      this.setState({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
+      if (!resizeTimeout) {
+        resizeTimeout = setTimeout(() => {
+          resizeTimeout = null
+          this.setState({
+            width: window.innerWidth,
+            height: window.innerHeight
+          })
+        }, 66)
+      }
     })
     const fieldElement = document.getElementById('field') || false
     function sleep (ms = 0) {
