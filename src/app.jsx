@@ -81,7 +81,7 @@ class App extends React.Component {
         </div>
         <div className='menu'>
           <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? '▋▋' : '▶'}</button>
-          <button onClick={() => { this.setState({ field: next(this.state.field) }) }}>Next</button>
+          <button disabled={this.state.play} onClick={() => { this.setState({ field: next(this.state.field) }) }}>Next</button>
           <button onClick={() => { this.setState({ field: createField(100, 60), play: false }) }}>Clear</button>
         </div>
       </div>
