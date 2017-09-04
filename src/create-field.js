@@ -21,17 +21,17 @@ const getNeighbors = (i, x, y) => {
       total,
       total - x + 1,
       0,
-      i + y,
-      i + y - 1
+      i + x,
+      i + x - 1
     ]
   }
   // botom corner left
   if (i === total - x + 1) {
     return [
       total,
-      total - y,
-      i - y,
-      i - y + 1, // right-up
+      total - x,
+      i - x,
+      i - x + 1, // right-up
       i + 1, // right
       1,
       0,
@@ -42,8 +42,8 @@ const getNeighbors = (i, x, y) => {
   if (i === total) {
     return [
       i - 1, // left
-      i - y - 1, // left-up
-      i - y, // up
+      i - x - 1, // left-up
+      i - x, // up
       total - x * 2 + 1,
       total - x + 1,
       0,
@@ -59,18 +59,18 @@ const getNeighbors = (i, x, y) => {
       total - (x - 1 - i), // up
       total - (x - 1 - i) + 1, // right-up
       i + 1, // right
-      i + y + 1, // down-right
-      i + y, // down
-      i + y - 1 // down-left
+      i + x + 1, // down-right
+      i + x, // down
+      i + x - 1 // down-left
     ]
   }
   // botom edge
   if (i > total - x) {
     return [
       i - 1, // left
-      i - y - 1, // left-up
-      i - y, // up
-      i - y + 1, // right-up
+      i - x - 1, // left-up
+      i - x, // up
+      i - x + 1, // right-up
       i + 1, // right
       x - 1 - (total - i) + 1,
       x - 1 - (total - i),
@@ -81,13 +81,13 @@ const getNeighbors = (i, x, y) => {
   if ((i + 1) % x === 0) {
     return [
       i - 1, // left
-      i - y - 1, // left-up
-      i - y, // up
+      i - x - 1, // left-up
+      i - x, // up
       i - ((x * 2) - 1), // right-up
       i + 1 - x, // right
       i + 1, // down-right
-      i + y, // down
-      i + y - 1 // down-left
+      i + x, // down
+      i + x - 1 // down-left
     ]
   }
   // left edge
@@ -95,23 +95,23 @@ const getNeighbors = (i, x, y) => {
     return [
       i + x - 1, // left
       i - 1, // left-up
-      i - y, // up
-      i - y + 1, // right-up
+      i - x, // up
+      i - x + 1, // right-up
       i + 1, // right
-      i + y + 1, // down-right
-      i + y, // down
+      i + x + 1, // down-right
+      i + x, // down
       i + 2 * x - 1 // down-left
     ]
   }
   return [
     i - 1, // left
-    i - y - 1, // left-up
-    i - y, // up
-    i - y + 1, // right-up
+    i - x - 1, // left-up
+    i - x, // up
+    i - x + 1, // right-up
     i + 1, // right
-    i + y + 1, // down-right
-    i + y, // down
-    i + y - 1 // down-left
+    i + x + 1, // down-right
+    i + x, // down
+    i + x - 1 // down-left
   ]
 }
 

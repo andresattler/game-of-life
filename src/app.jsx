@@ -7,11 +7,20 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      field: createField(10, 10),
-      play: false
+      field: createField(100, 60),
+      play: false,
+      width: window.innerWidth,
+      height: window.innerHeight
     }
   }
   componentDidMount () {
+    window.addEventListener('resize', (e) => {
+      this.setState({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
+    })
+    const fieldElement = document.getElementById('field') || false
     function sleep (ms = 0) {
       return new Promise(resolve => setTimeout(resolve, ms))
     }
@@ -22,25 +31,53 @@ class App extends React.Component {
       }
       play()
     }
-    play()
+    if (fieldElement) {
+      play()
+      const handleMouseup = () => {
+        fieldElement.removeEventListener('mousemove', paint)
+        fieldElement.removeEventListener('mouseup', handleMouseup)
+      }
+      const paint = (e) => {
+        if (e.target.getAttribute('data-id')) {
+          const nextField = [...this.state.field]
+          nextField[e.target.getAttribute('data-id')].alive = true
+          this.setState({
+            field: nextField
+          })
+        }
+      }
+      fieldElement.addEventListener('click', paint)
+      fieldElement.addEventListener('mousedown', () => {
+        fieldElement.addEventListener('mousemove', paint)
+        fieldElement.addEventListener('mouseup', handleMouseup)
+      })
+    }
   }
+
   render () {
     return (
       <div>
-        <div id='field'>
+        <div id='field'
+          style={{
+            width: Math.sqrt(this.state.width * this.state.height * 0.7) / Math.sqrt(6000) * 100
+          }}
+          >
           {this.state.field.map(cell =>
             <div
               className={`cell${cell.alive ? ' active' : ''}`}
               key={cell.id}
-              onClick={() => {
-                this.state.field[cell.id].alive = !this.state.field[cell.id].alive
-                this.forceUpdate()
-              }} />)}
+              data-id={cell.id}
+              style={{
+                width: Math.sqrt(this.state.width * this.state.height * 0.7) / Math.sqrt(6000),
+                height: Math.sqrt(this.state.width * this.state.height * 0.7) / Math.sqrt(6000)
+              }}
+               />)}
         </div>
-        <button onClick={() => { this.setState({ play: false }) }}>Pause</button>
-        <button onClick={() => { this.setState({ play: true }) }}>Play</button>
-        <button onClick={() => { this.setState({ field: next(this.state.field) }) }}>Next</button>
-        <button onClick={() => { this.setState({ field: createField(10, 10) }) }}>Clear</button>
+        <div className='menu'>
+          <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? '▋▋' : '▶'}</button>
+          <button onClick={() => { this.setState({ field: next(this.state.field) }) }}>Next</button>
+          <button onClick={() => { this.setState({ field: createField(100, 60), play: false }) }}>Clear</button>
+        </div>
       </div>
     )
   }
