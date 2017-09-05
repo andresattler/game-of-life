@@ -41,9 +41,17 @@ body
       &:hover
         border 2px solid white
         box-shadow none
-        font-weight bold
     &:disabled
       background-color gray
-      color white
   .play-pause-btn
     background-color #479DC8
+.speed-dropdown
+  position relative
+  display inline-block
+.speed-menu
+  display none
+  position absolute
+  top -100px
+  z-index 1
+.speed-dropdown:hover .speed-menu
+  display block

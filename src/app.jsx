@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaRandom, FaPlay, FaPause, FaStepForward, FaTrash } from 'react-icons/lib/fa'
+import { FaRandom, FaPlay, FaPause, FaStepForward, FaTrash, FaDashboard, FaPlusCircle, FaMinusCircle } from 'react-icons/lib/fa'
 
 import createField from './create-field'
 import next from './next'
@@ -10,6 +10,7 @@ class App extends React.Component {
     this.state = {
       field: createField(100, 60),
       play: false,
+      speed: 500,
       width: window.innerWidth,
       height: window.innerHeight
     }
@@ -32,7 +33,7 @@ class App extends React.Component {
       return new Promise(resolve => setTimeout(resolve, ms))
     }
     const play = async () => {
-      await sleep(500)
+      await sleep(this.state.speed)
       if (this.state.play === true) {
         this.setState({ field: next(this.state.field) })
       }
@@ -80,6 +81,13 @@ class App extends React.Component {
                />)}
         </div>
         <div className='menu'>
+          <div className='speed-dropdown'>
+            <button><FaDashboard /></button>
+            <div className='speed-menu'>
+              <button disabled={this.state.speed >= 1000} onClick={() => { this.state.speed < 1000 && this.setState({ speed: this.state.speed + 100 }) }}><FaMinusCircle /></button>
+              <button disabled={this.state.speed <= 100}onClick={() => { this.state.speed > 100 && this.setState({ speed: this.state.speed - 100 }) }}><FaPlusCircle /></button>
+            </div>
+          </div>
           <button onClick={() => {
             this.setState({
               field: this.state.field.map(cell => {
