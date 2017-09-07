@@ -97,7 +97,7 @@ class App extends React.Component {
               })
             })
           }}><FaRandom /></button>
-        <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? <FaPause /> : <FaPlay />}</button>
+          <button className='play-pause-btn' onClick={() => { this.setState({ play: !this.state.play }) }}>{this.state.play ? <FaPause /> : <FaPlay />}</button>
           <button disabled={this.state.play} onClick={() => { this.setState({ field: next(this.state.field) }) }}><FaStepForward /></button>
           <button onClick={() => { this.setState({ field: createField(100, 60), play: false }) }}><FaTrash /></button>
         </div>

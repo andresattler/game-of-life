@@ -32,7 +32,7 @@ export default {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: '!!pug-loader!src/index.pug'
+      template: '!pug-loader!src/index.pug'
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
