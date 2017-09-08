@@ -45,6 +45,8 @@ export default {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor'
     }),
-    new OfflinePlugin()
+    new OfflinePlugin({
+      publicPath: '/game-of-life/'
+    })
   ]
 }
