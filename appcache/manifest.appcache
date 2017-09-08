@@ -1,12 +1,12 @@
 CACHE MANIFEST
-#ver:2017-9-8 12:46:08
+#ver:2017-9-8 13:16:14
 #plugin:4.8.3
 
 CACHE:
-../app6e109e.js
-../vendor954175.js
-../styles6e109e.css
-../
+/game-of-life/appc442bb.js
+/game-of-life/vendor31121d.js
+/game-of-life/stylesc442bb.css
+/game-of-life/
 
 NETWORK:
 *
