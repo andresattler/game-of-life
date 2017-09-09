@@ -3,6 +3,7 @@ import CleanWebpackPlungin from 'clean-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import OfflinePlugin from 'offline-plugin'
+import CopyPlugin from 'copy-webpack-plugin'
 import webpack from 'webpack'
 
 export default {
@@ -31,13 +32,15 @@ export default {
     ]
   },
   resolve: {
+    alias: {
+      'react': 'preact-compat',
+      'react-dom': 'preact-compat'
+    },
     extensions: ['.js', '.jsx']
-  },
-  performance: {
-    hints: 'error'
   },
   plugins: [
     new CleanWebpackPlungin('dist'),
+    new CopyPlugin([{from: 'public', to: './'}]),
     new HtmlWebpackPlugin({
       template: '!pug-loader!src/index.pug'
     }),

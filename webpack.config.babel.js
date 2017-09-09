@@ -4,15 +4,11 @@ import webpack from 'webpack'
 
 export default {
   entry: [
-    'react-hot-loader/patch',
     './src'
   ],
   output: {
     filename: 'bundle.js',
     path: resolve(__dirname, 'dist')
-  },
-  devServer: {
-    hot: true
   },
   module: {
     rules: [
@@ -28,15 +24,15 @@ export default {
     ]
   },
   resolve: {
+    alias: {
+      'react': 'preact-compat',
+      'react-dom': 'preact-compat'
+    },
     extensions: ['.js', '.jsx']
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: '!pug-loader!src/index.pug'
-    }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    })
   ]
 }
