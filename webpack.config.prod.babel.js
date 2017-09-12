@@ -35,11 +35,9 @@ export default {
     new HtmlWebpackPlugin({
       template: '!pug-loader!src/index.pug'
     }),
-    new ExtractTextPlugin('styles.[chunkhash:6].css')
-    /*
+    new ExtractTextPlugin('styles.[chunkhash:6].css'),
     new OfflinePlugin({
       publicPath: '/game-of-life/'
     })
-    */
   ]
 }
