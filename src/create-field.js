@@ -120,7 +120,6 @@ const createField = (x, y) =>
     .map((val, i) =>
       ({
         id: i,
-        alive: false,
         neighbors: getNeighbors(i, x, y)
       }))
 

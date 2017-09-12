@@ -16,4 +16,16 @@ html(lang="eng")
     meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
     meta(name="msapplication-starturl" content="/")
   body
-    #app
+    canvas#field(width="1000px" height="600px")
+    .menu
+      button#config Config 
+      .speed-dropdown
+        button Speed
+        .speed-menu
+          button -
+          button +
+      button#random Random
+      button#play-pause Play
+      button#next Next
+      button#clear Clear
+      button#add Add
