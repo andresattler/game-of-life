@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const state = {
   play: false,
-  field: [],
+  field: [...Array(6000)].map(() => false),
   rowLength: 100,
   rowHeight: 60
 }
@@ -45,7 +45,6 @@ function transform (pattern) {
     }
     i++
   }
-  console.log(v)
   return v
 }
 
@@ -86,7 +85,14 @@ function handleClear () {
 }
 
 function handlePaint (e) {
-  console.log(e.clientX, e.clientY)
+  const row = Math.floor(e.clientY / 10)
+  console.log('row:', row)
+  const x = Math.floor((e.clientX - e.target.offsetLeft) / 10 - 1)
+  const index = x + (row * 100) + 1
+  console.log(index)
+  state.field[index] = !state.field[index]
+  // TO DO!!
+  webGLRenderer(transform(state.field))
 }
 
 document.getElementById('random').addEventListener('click', handleRandom)
