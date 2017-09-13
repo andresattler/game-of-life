@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const state = {
   play: false,
+  speed: 500,
   field: [...Array(6000)].map(() => false),
   rowLength: 100,
   rowHeight: 60
@@ -60,11 +61,11 @@ function handleNext () {
 
 function handlePlay (e) {
   state.play = !state.play
-  function sleep (ms = 0) {
+  function sleep (ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
   const play = () => {
-    sleep(100).then(() => {
+    sleep(state.speed).then(() => {
       webGLRenderer(transform(next(fieldModel, state.field)))
       if (state.play) {
         play()
@@ -84,19 +85,51 @@ function handleClear () {
   webGLRenderer([])
 }
 
-function handlePaint (e) {
-  const row = Math.floor(e.clientY / 10)
-  console.log('row:', row)
-  const x = Math.floor((e.clientX - e.target.offsetLeft) / 10 - 1)
+function paint (cX, cY, offsetLeft, draw) {
+  const row = Math.floor(cY / 10)
+  const x = Math.floor((cX - offsetLeft) / 10 - 1)
   const index = x + (row * 100) + 1
-  console.log(index)
-  state.field[index] = !state.field[index]
+  state.field[index] = draw ? true : !state.field[index]
   // TO DO!!
   webGLRenderer(transform(state.field))
+}
+
+function handlePaint (e) {
+  paint(e.clientX, e.clientY, e.target.offsetLeft)
+}
+
+function handleDraw (e) {
+  function stop () {
+    e.target.removeEventListener('mousemove', draw)
+  }
+  function draw (e) {
+    paint(e.clientX, e.clientY, e.target.offsetLeft, true)
+  }
+  e.target.addEventListener('mousemove', draw)
+  e.target.addEventListener('mouseup', stop)
+}
+
+function SpeedDown (e) {
+  if (state.speed < 1000) {
+    state.speed += 50
+    console.log(state.speed)
+  } else {
+    console.log(e.target.getAttribute('disabled'))
+  }
+}
+
+function SpeedUp () {
+  if (state.speed > 50) {
+    state.speed -= 50
+    console.log(state.speed)
+  }
 }
 
 document.getElementById('random').addEventListener('click', handleRandom)
 document.getElementById('next').addEventListener('click', handleNext)
 document.getElementById('play-pause').addEventListener('click', handlePlay)
+document.getElementById('speed-up').addEventListener('click', SpeedUp)
+document.getElementById('speed-down').addEventListener('click', SpeedDown)
 document.getElementById('clear').addEventListener('click', handleClear)
 document.getElementById('field').addEventListener('click', handlePaint)
+document.getElementById('field').addEventListener('mousedown', handleDraw)
