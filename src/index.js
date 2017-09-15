@@ -10,13 +10,25 @@ if (process.env.NODE_ENV === 'production') {
   install()
 }
 
+const fieldEl = document.getElementById('field')
+
 const state = {
   play: false,
   speed: 500,
   field: [...Array(6000)].map(() => false),
-  rowLength: 100,
-  rowHeight: 60
+  rowWidth: 100,
+  rowHeight: 60,
+  nrOfCells: 6000
 }
+
+function updateFieldDimensions () {
+  fieldEl.width = window.innerWidth
+  fieldEl.height = window.innerHeight * 0.9
+  state.size = fieldEl.width / state.rowHeight
+}
+
+updateFieldDimensions()
+newFieldDimensions()
 
 function transform (pattern) {
   const v = []
@@ -25,8 +37,8 @@ function transform (pattern) {
   let x = 0
   let y = 0
   let i = 0
-  const size = 10
-  while (i < 6000) {
+  const size = fieldEl.width / state.rowWidth
+  while (i < state.nrOfCells) {
     x += size
     if (state.field[i]) {
       v.push(
@@ -39,7 +51,7 @@ function transform (pattern) {
         x + size, y  // right up
       )
     }
-    if (i === state.rowLength * (row + 1)) {
+    if (i === state.rowWidth * (row + 1)) {
       row++
       y += size
       x = 0
@@ -51,12 +63,29 @@ function transform (pattern) {
 
 const randomPattern = length => [...Array(length)].map(cell => Math.random() > 0.75)
 
-function handleRandom () {
-  webGLRenderer(transform(randomPattern(6000)))
+function newFieldDimensions () {
+  state.size = Math.sqrt((window.innerWidth * (window.innerHeight * 0.9)) / state.nrOfCells)
+  state.rowWidth = Math.floor(window.innerWidth / state.size)
+  state.rowHeight = state.nrOfCells / state.rowWidth
 }
-const fieldModel = createField(state.rowLength, state.rowHeight)
+
+function handleRezise () {
+  let resizeTimeout
+  if (!resizeTimeout) {
+    resizeTimeout = setTimeout(() => {
+      resizeTimeout = null
+      updateFieldDimensions()
+    })
+  }
+}
+
+function handleRandom () {
+  newFieldDimensions()
+  webGLRenderer(transform(randomPattern(state.nrOfCells)))
+}
+const fieldModel = () => createField(state.rowWidth, state.rowHeight)
 function handleNext () {
-  webGLRenderer(transform(next(fieldModel, state.field)))
+  webGLRenderer(transform(next(fieldModel(), state.field)))
 }
 
 function handlePlay (e) {
@@ -66,7 +95,7 @@ function handlePlay (e) {
   }
   const play = () => {
     sleep(state.speed).then(() => {
-      webGLRenderer(transform(next(fieldModel, state.field)))
+      webGLRenderer(transform(next(fieldModel(), state.field)))
       if (state.play) {
         play()
       }
@@ -80,22 +109,24 @@ function pause () {
   document.getElementById('play-pause').innerHTML = 'Play'
 }
 function handleClear () {
+  newFieldDimensions()
   state.play && pause()
   state.field = []
   webGLRenderer([])
 }
 
-function paint (cX, cY, offsetLeft, draw) {
-  const row = Math.floor(cY / 10)
-  const x = Math.floor((cX - offsetLeft) / 10 - 1)
-  const index = x + (row * 100) + 1
+function paint (cX, cY, draw) {
+  const size = fieldEl.width / state.rowWidth
+  const row = Math.floor(cY / size)
+  const x = Math.floor(cX / size - 1)
+  const index = x + (row * state.rowWidth) + 1
   state.field[index] = draw ? true : !state.field[index]
   // TO DO!!
   webGLRenderer(transform(state.field))
 }
 
 function handlePaint (e) {
-  paint(e.clientX, e.clientY, e.target.offsetLeft)
+  paint(e.clientX, e.clientY)
 }
 
 function handleDraw (e) {
@@ -103,9 +134,11 @@ function handleDraw (e) {
     e.target.removeEventListener('mousemove', draw)
   }
   function draw (e) {
-    paint(e.clientX, e.clientY, e.target.offsetLeft, true)
+    paint(e.clientX, e.clientY, true)
   }
+  e.target.addEventListener('touchmove', (e) => draw(e.changedTouches[0]))
   e.target.addEventListener('mousemove', draw)
+  e.target.addEventListener('touchend', (e) => stop(e.changedTouches[0]))
   e.target.addEventListener('mouseup', stop)
 }
 
@@ -125,6 +158,7 @@ function SpeedUp () {
   }
 }
 
+window.addEventListener('resize', handleRezise)
 document.getElementById('random').addEventListener('click', handleRandom)
 document.getElementById('next').addEventListener('click', handleNext)
 document.getElementById('play-pause').addEventListener('click', handlePlay)
@@ -132,4 +166,5 @@ document.getElementById('speed-up').addEventListener('click', SpeedUp)
 document.getElementById('speed-down').addEventListener('click', SpeedDown)
 document.getElementById('clear').addEventListener('click', handleClear)
 document.getElementById('field').addEventListener('click', handlePaint)
+document.getElementById('field').addEventListener('touchstart', (e) => { handleDraw(e.changedTouches[0]) })
 document.getElementById('field').addEventListener('mousedown', handleDraw)

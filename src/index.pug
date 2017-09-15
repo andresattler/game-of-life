@@ -3,7 +3,7 @@ html(lang="en")
   head
     title game of life
     meta(charset="utf-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;")
+    meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
     link(rel="icon" type="image/png" size="72x72" href="./images/icons/icon-72x72.png") 
     //- pwa part
     link(rel="manifest" href="manifest.json")
@@ -16,7 +16,7 @@ html(lang="en")
     meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
     meta(name="msapplication-starturl" content="/")
   body
-    canvas#field(width="1000px" height="600px")
+    canvas#field
     .menu
       button#config Config 
       .speed-dropdown

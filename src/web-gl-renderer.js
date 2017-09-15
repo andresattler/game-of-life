@@ -47,13 +47,13 @@ function webGLRenderer (v) {
     gl.uniform4fv(program.color, [1, 1, 1, 1.0])
 
     program.resolution = gl.getUniformLocation(program, 'resolution')
-    gl.uniform2f(program.resolution, 1000, 600)
+    gl.uniform2f(program.resolution, gl.canvas.width, gl.canvas.height)
 
     program.position = gl.getAttribLocation(program, 'position')
     gl.enableVertexAttribArray(program.position)
     gl.vertexAttribPointer(program.position, 2, gl.FLOAT, false, 0, 0)
 
-    gl.viewport(0, 0, 1000, 600)
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 2)
   }
