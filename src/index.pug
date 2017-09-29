@@ -5,6 +5,11 @@ html(lang="en")
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=0")
     link(rel="icon" type="image/png" size="72x72" href="./images/icons/icon-72x72.png") 
+    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet")
+    //- pwa part
+    link(rel="manifest" href="manifest.json")
+    meta(name="mobile-web-app-capable" content="yes")
+    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet")
     //- pwa part
     link(rel="manifest" href="manifest.json")
     meta(name="mobile-web-app-capable" content="yes")
@@ -18,17 +23,24 @@ html(lang="en")
   body
     canvas#field
     .menu
-      button#config Config
+      button#config
+        i.fa.fa-cog
       .speed-dropdown
-        button Speed
+        button
+          i.fa.fa-tachometer
         .speed-menu
           button#speed-down -
           button#speed-up +
-      button#random Random
-      button#play-pause Play
-      button#next Next
-      button#clear Clear
-      button#add-modal-btn Add
+      button#random
+        i.fa.fa-random
+      button#play-pause  
+        i.fa.fa-play
+      button#next
+        i.fa.fa-forward
+      button#clear 
+        i.fa.fa-trash-o
+      button#add-modal-btn 
+        i.fa.fa-plus-circle
     #modal-add.modal
       #name-list
     #modal-config.modal

@@ -100,6 +100,8 @@ function handleNext () {
 }
 function handlePlay (e) {
   state.play = !state.play
+  e.target.children[0].classList.toggle('fa-play')
+  e.target.children[0].classList.toggle('fa-pause')
   function sleep (ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
@@ -112,7 +114,6 @@ function handlePlay (e) {
     })
   }
   play()
-  e.target.innerHTML = state.play ? 'Pause' : 'Play'
 }
 function pause () {
   state.play = false
