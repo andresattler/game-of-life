@@ -10,21 +10,35 @@ if (process.env.NODE_ENV === 'production') {
   install()
 }
 
-const fieldEl = document.getElementById('field')
+fetch('./public/patterns/index.json')
+.then(data => data.json())
+.then((json) => {
+  const nameListEl = document.getElementById('name-list')
+  json.forEach((pattern) => {
+    const div = document.createElement('div')
+    div.innerHTML = pattern.name
+    div.className = 'name'
+    div.dataset.filename = pattern.filename
+    nameListEl.appendChild(div)
+  })
+})
 
 const state = {
   play: false,
   speed: 500,
-  field: [...Array(6000)].map(() => false),
-  rowWidth: 100,
-  rowHeight: 60,
-  nrOfCells: 6000
+  field: Array.from(new Array(54000), () => false),
+  width: 300,
+  height: 180,
+  nrOfCells: 54000
 }
+
+const fieldEl = document.getElementById('field')
+const fieldModel = () => createField(state.width, state.height)
 
 function updateFieldDimensions () {
   fieldEl.width = window.innerWidth
   fieldEl.height = window.innerHeight * 0.9
-  state.size = fieldEl.width / state.rowHeight
+  state.size = fieldEl.width / state.height
 }
 
 updateFieldDimensions()
@@ -36,9 +50,8 @@ function transform (pattern) {
   let row = 0
   let x = 0
   let y = 0
-  let i = 0
-  const size = fieldEl.width / state.rowWidth
-  while (i < state.nrOfCells) {
+  const size = state.size
+  for (let i = 0; i < state.nrOfCells; i += 1) {
     x += size
     if (state.field[i]) {
       v.push(
@@ -51,12 +64,11 @@ function transform (pattern) {
         x + size, y  // right up
       )
     }
-    if (i === state.rowWidth * (row + 1)) {
+    if (i === state.width * (row + 1) - 1) {
       row++
       y += size
       x = 0
     }
-    i++
   }
   return v
 }
@@ -65,8 +77,8 @@ const randomPattern = length => [...Array(length)].map(cell => Math.random() > 0
 
 function newFieldDimensions () {
   state.size = Math.sqrt((window.innerWidth * (window.innerHeight * 0.9)) / state.nrOfCells)
-  state.rowWidth = Math.floor(window.innerWidth / state.size)
-  state.rowHeight = state.nrOfCells / state.rowWidth
+  state.width = Math.floor(window.innerWidth / state.size)
+  state.height = state.nrOfCells / state.width
 }
 
 function handleRezise () {
@@ -83,11 +95,9 @@ function handleRandom () {
   newFieldDimensions()
   webGLRenderer(transform(randomPattern(state.nrOfCells)))
 }
-const fieldModel = () => createField(state.rowWidth, state.rowHeight)
 function handleNext () {
   webGLRenderer(transform(next(fieldModel(), state.field)))
 }
-
 function handlePlay (e) {
   state.play = !state.play
   function sleep (ms) {
@@ -111,15 +121,15 @@ function pause () {
 function handleClear () {
   newFieldDimensions()
   state.play && pause()
-  state.field = []
+  state.field = [...Array(state.nrOfCells)].map(() => false)
   webGLRenderer([])
 }
 
 function paint (cX, cY, draw) {
-  const size = fieldEl.width / state.rowWidth
+  const size = fieldEl.width / state.width
   const row = Math.floor(cY / size)
   const x = Math.floor(cX / size - 1)
-  const index = x + (row * state.rowWidth) + 1
+  const index = x + (row * state.width) + 1
   state.field[index] = draw ? true : !state.field[index]
   // TO DO!!
   webGLRenderer(transform(state.field))
@@ -145,20 +155,55 @@ function handleDraw (e) {
 function SpeedDown (e) {
   if (state.speed < 1000) {
     state.speed += 50
-    console.log(state.speed)
   } else {
-    console.log(e.target.getAttribute('disabled'))
+    // To do disable button
   }
 }
 
 function SpeedUp () {
   if (state.speed > 50) {
     state.speed -= 50
-    console.log(state.speed)
   }
 }
 
+function handleAdd (e) {
+  const filename = e.target.dataset.filename
+  if (filename) {
+    fetch(`./public/patterns/${filename}.json`)
+    .then(data => data.json())
+    .then(json => {
+      const middle = Array.from(new Array(json.data.y * state.width), () => false)
+      const startY = 10
+      const startX = 10
+      let n = 0
+      for (let i = 0; i < json.data.y; i++) {
+        for (let j = 0; j < json.data.x; j++) {
+          middle[j + startX + i * state.width] = json.pattern[n]
+          n++
+        }
+      }
+      const nextState = [
+        ...Array.from(new Array(startY * state.width), () => false),
+        ...middle,
+        ...Array.from(new Array(startY * state.width), () => false)
+      ]
+      webGLRenderer(transform(nextState))
+      toggleAddModal()
+    })
+  }
+}
+
+function toggleAddModal () {
+  document.getElementById('modal-add').classList.toggle('visible')
+}
+
 window.addEventListener('resize', handleRezise)
+document.getElementById('name-list').addEventListener('click', handleAdd)
+document.getElementById('add-modal-btn').addEventListener('click', toggleAddModal)
+document.getElementById('modal-add').addEventListener('click', (e) => {
+  e.target === e.currentTarget && toggleAddModal()
+}
+)
 document.getElementById('random').addEventListener('click', handleRandom)
 document.getElementById('next').addEventListener('click', handleNext)
 document.getElementById('play-pause').addEventListener('click', handlePlay)

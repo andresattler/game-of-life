@@ -1,3 +1,7 @@
+#C Breeder, the classic original by Bill Gosper, early 1970's.
+#C This is the first pattern to demonstrate that quadratic growth was possible
+in the Game of Life. Much better results have been achieved since then
+(see Spacefiller, SwitchEnginePuffer).
 x = 749, y = 338, skip = 5, fps = 40
 404bobbo$408bo$404bo3bo$405b4o$416boo$402bo11bo4bo$400bobo17bo$342bobo
 46bo8bobo11bo5bo$342bobo44bo3bo21b6o5b6o$331bo10boboo48bo30bo5bo$329bo
@@ -138,8 +142,3 @@ oo5boo11boo12b3o6bo4boo$354bobobboobobbooboo18bo15bo14bobbo3boo$332b3o
 bobo17b3o$334boo35bo3bo15b5o$372boobo15b3oboo34boo$374bo19boo21b4o6b4o
 boo$416b6o5b6o$416b4oboo5b4o$403boo15boo$402bo$407boo$406b4o$406booboo
 $408boo!
-Breeder, the classic original by Bill Gosper, early 1970's.
-
-This is the first pattern to demonstrate that quadratic growth was possible 
-in the Game of Life. Much better results have been achieved since then 
-(see Spacefiller, SwitchEnginePuffer).

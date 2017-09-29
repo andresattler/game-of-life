@@ -1,22 +1,53 @@
 import fs from 'fs'
 import path from 'path'
 
-function readRLE (filename) {
-  const text = fs.readFileSync(path.resolve(__dirname, 'files', filename), 'utf-8')
-  const dataStart = text.indexOf('\n') + 1
-  const dataEnd = text.indexOf('!')
-  const header = text.slice(0, dataStart)
-  const headerData = header.split(',')
+function extractData (text) {
+  const info = {
+    name: '',
+    creator: '',
+    comments: []
+  }
+  const rawData = text.split('\n').filter((line) => {
+    if (line.charAt(0) === '#') {
+      switch (line.charAt(1)) {
+        case 'N':
+          // 3 to remove space character -1 to remove /r character at the end of the line
+          info.name = line.slice(3)
+          break
+        case 'O':
+          info.creator = line.slice(3)
+          break
+        case 'C':
+          info.comments.push(line.slice(3))
+          break
+      }
+      return false
+    }
+    return true
+  }).join('\n')
+  const header = rawData.slice(0, rawData.indexOf('\n') - 1)
+  const data = header.split(',')
     .map(val => val.split(' ')
     .filter(val => val !== '=' && val !== ''))
     .reduce((obj, val) => {
-      return Object.assign(obj, { [val[0]]: parseInt(val[1]) })
+      return Object.assign(obj, { [val[0]]: isNaN(val[1]) ? val[1] : parseInt(val[1]) })
     }, {})
+  const pattern = rawData.slice(rawData.indexOf('\n') + 1)
+  return {
+    info,
+    data,
+    pattern
+  }
+}
+
+function readRLE (filename) {
+  const textData = extractData(
+    fs.readFileSync(path.resolve(__dirname, 'files', filename), 'utf-8')
+  )
   const createSequence = (lenght, val) => Array.from(new Array(lenght), () => val)
   const isCharString = (char) => /^\d+$/.test(char)
   let row = 1
-  const pattern = text
-    .slice(dataStart, dataEnd) // get the relevant part
+  const pattern = textData.pattern
     .split('') // convert to array
     .reduce((arr, char, i, data) => {
       if (isCharString(char) && !isCharString(data[i - 1])) { // handle <count> tag
@@ -29,7 +60,7 @@ function readRLE (filename) {
         return arr.concat(createSequence(parseInt(res), data[i + j]))
       }
       if (char === '$' || char === '!') {
-        const length = headerData.x * row - arr.length
+        const length = parseInt(textData.data.x) * row - arr.length
         row += 1
         if (length > 0) {
           return arr.concat(createSequence(length, 'b'))
@@ -37,17 +68,13 @@ function readRLE (filename) {
           return arr
         }
       }
-      if (!isCharString(data[i - 1])) {
+      if (!isCharString(data[i - 1]) && (char === 'o' || char === 'b')) {
         return arr.concat(char)
       }
       return arr
     }, [])
     .map(val => val === 'o')
-  return {
-    name: filename.slice(0, -4),
-    headerData,
-    pattern
-  }
+  return Object.assign({}, textData, { pattern })
 }
 
 export default readRLE

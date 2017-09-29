@@ -1,3 +1,9 @@
+#C Five small Corderships.
+#C Corderships are c/12 diagonal spaceships built from switch engines. The trick in constructing a Cordership is to arrange the switch engines in such a way that they clean up each others' debris.
+#C Front: A single-row, 7-engine Cordership.
+#C Middle: Two 6-engine constructions and a symmetric 8-engine.
+#C Back: The classic 7-engine Cordership, shown with classic rear-end glider collisions.
+#C All five of these Corderships were constructed by Dean Hickerson, who named them after the discoverer of the switch engine, Charles Corderman.
 x = 244, y = 255, skip = 1, fps = 100
 95bo$78b3o8bo5bo$77bo3bo6bo7bo$78boo9b4obboo$80booboo9b3o$82boo11bobo$
 96bo7boo$96bo7boo3$88bo$87bobo$87bobo$74b3o11bo$75bo36boo$75bobbo33boo
@@ -51,14 +57,14 @@ $50bobo13boo$50bo14bo29bo$45boo16boobbo27bo93boo29boo$45boo17bo3bo26bo
 93boo28boo$64bobbo153bo$65b3o$$81b3o15$218bo$217boo$217bobo!
 Five small Corderships.
 
-Corderships are c/12 diagonal spaceships built from switch engines. The 
-trick in constructing a Cordership is to arrange the switch engines in such a 
+Corderships are c/12 diagonal spaceships built from switch engines. The
+trick in constructing a Cordership is to arrange the switch engines in such a
 way that they clean up each others' debris.
 
 Front: A single-row, 7-engine Cordership.
 Middle: Two 6-engine constructions and a symmetric 8-engine.
-Back: The classic 7-engine Cordership, shown with classic rear-end glider 
+Back: The classic 7-engine Cordership, shown with classic rear-end glider
 collisions.
 
-All five of these Corderships were constructed by Dean Hickerson, who 
+All five of these Corderships were constructed by Dean Hickerson, who
 named them after the discoverer of the switch engine, Charles Corderman.
