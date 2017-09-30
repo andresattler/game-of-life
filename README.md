@@ -1,6 +1,6 @@
 # Game of Life
 
-this is a implementaiton of game of life as a progressive web app.
+This is a implementation of game of life as a progressive web app.
 
 ## Demo
 [demo](https://andresattler.github.io/game-of-life/)
@@ -32,12 +32,18 @@ yarn start
 
 now you can view this web app on localhost on port 8080
 
-## Build app
+## Build
+
+build patterns:
+```
+yarn build-patterns
+```
+build app:
 ```
 yarn build
 ```
 
-## Developed With
+## Developed with
 
 * Webpack
 * Babel
