@@ -19,7 +19,7 @@ files.map(name => readRLE(name))
   })
 })
 
-fs.writeFile(`./public/patterns/index.json`, JSON.stringify(fileInf), 'utf-8', (err) => {
+fs.writeFile(`./public/patterns/index.json`, JSON.stringify({ fileInf }), 'utf-8', (err) => {
   if (err) {
     return console.log(err)
   }

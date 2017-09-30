@@ -6,7 +6,6 @@ function transform (state) {
   let y = 0
   const size = state.size
   for (let i = 0; i < state.nrOfCells; i += 1) {
-    x += size
     if (state.pattern[i]) {
       v.push(
         // 1st polygon
@@ -19,6 +18,7 @@ function transform (state) {
         x + size, y  // right up
       )
     }
+    x += size
     if (i === state.width * (row + 1) - 1) {
       // switching to the next row
       row++

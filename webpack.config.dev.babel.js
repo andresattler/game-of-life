@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve, join } from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 export default {
@@ -8,6 +8,9 @@ export default {
   output: {
     filename: 'bundle.js',
     path: resolve(__dirname, 'dist')
+  },
+  devServer: {
+    contentBase: join(__dirname, 'dist')
   },
   module: {
     rules: [

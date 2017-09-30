@@ -16,11 +16,11 @@ if (process.env.NODE_ENV === 'production') {
 // global vars
 const state = {
   play: false,
-  speed: 500,
-  pattern: Array.from(new Array(54000), () => false),
-  width: 300,
-  height: 180,
-  nrOfCells: 54000
+  speed: 250,
+  pattern: Array.from(new Array(500 * 230), () => false),
+  width: 500,
+  height: 230,
+  nrOfCells: 500 * 230
 }
 
 const fieldEl = document.getElementById('field')
@@ -30,7 +30,7 @@ const fieldModel = () => createField(state.width, state.height)
 function updateFieldDimensions () {
   fieldEl.width = window.innerWidth
   fieldEl.height = window.innerHeight * 0.9
-  state.size = fieldEl.width / state.height
+  state.size = fieldEl.width / state.width
 }
 
 function newFieldDimensions () {
@@ -39,7 +39,7 @@ function newFieldDimensions () {
   state.height = state.nrOfCells / state.width
 }
 
-function render (nextPattern) {
+function render (nextPattern = state.pattern) {
   state.pattern = nextPattern.slice()
   webGLRenderer(transform(state))
 }
@@ -47,7 +47,7 @@ function render (nextPattern) {
 function paint (cX, cY, draw) {
   const nextPattern = state.pattern.slice()
   const size = fieldEl.width / state.width
-  const row = Math.floor(cY / size)
+  const row = Math.floor(cY / state.size)
   const x = Math.floor(cX / size - 1)
   const index = x + (row * state.width) + 1
   nextPattern[index] = draw ? true : !nextPattern[index]
@@ -55,11 +55,11 @@ function paint (cX, cY, draw) {
 }
 
 // initialize app
-fetch('./public/patterns/index.json')
+fetch('./patterns/index.json')
 .then(data => data.json())
-.then((json) => {
+.then(({fileInf}) => {
   const nameListEl = document.getElementById('name-list')
-  json.forEach((pattern) => {
+  fileInf.forEach((pattern) => {
     const div = document.createElement('div')
     div.innerHTML = pattern.name
     div.className = 'name'
@@ -70,7 +70,7 @@ fetch('./public/patterns/index.json')
 
 updateFieldDimensions()
 newFieldDimensions()
-render(state.pattern)
+render()
 
 function pause () {
   state.play = false
@@ -85,6 +85,7 @@ function handleRezise () {
     resizeTimeout = setTimeout(() => {
       resizeTimeout = null
       updateFieldDimensions()
+      render()
     })
   }
 }
@@ -105,7 +106,7 @@ function SpeedUp () {
 
 function handleRandom () {
   newFieldDimensions()
-  const randomPattern = length => Array.from(new Array(length), () => cell => Math.random() > 0.75)
+  const randomPattern = length => Array.from(new Array(length), () => Math.random() > 0.75)
   render(randomPattern(state.nrOfCells))
 }
 
@@ -128,6 +129,7 @@ function handlePlay (e) {
 }
 
 function handleNext () {
+  console.log(fieldModel())
   render(next(fieldModel(), state.pattern))
 }
 
@@ -138,12 +140,11 @@ function handleClear () {
 }
 
 function handleAdd (e) {
-  newFieldDimensions()
   const filename = e.target.dataset.filename
   if (filename) {
-    fetch(`./public/patterns/${filename}.json`)
+    fetch(`./patterns/${filename}.json`)
     .then(data => data.json())
-    .then(json => {
+    .then((json) => {
       const middle = Array.from(new Array(json.data.y * state.width), () => false)
       const startY = 10
       const startX = 10
@@ -157,7 +158,7 @@ function handleAdd (e) {
       const nextState = [
         ...Array.from(new Array(startY * state.width), () => false),
         ...middle,
-        ...Array.from(new Array(startY * state.width), () => false)
+        ...Array.from(new Array(state.nrOfCells - middle.length - (startY * state.width)), () => false)
       ]
       render(nextState)
       toggleAddModal()
@@ -200,7 +201,9 @@ document.getElementById('name-list').addEventListener('click', handleAdd)
 document.getElementById('modal-add').addEventListener('click', (e) => {
   e.target === e.currentTarget && toggleAddModal()
 })
-
+document.getElementById('modal-add').addEventListener('touchstart', (e) => {
+  e.target === e.currentTarget && toggleAddModal()
+})
 document.getElementById('field').addEventListener('click', handlePaint)
 document.getElementById('field').addEventListener('touchstart', (e) => { handleDraw(e.changedTouches[0]) })
 document.getElementById('field').addEventListener('mousedown', handleDraw)
